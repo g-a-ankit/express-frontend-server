@@ -1,4 +1,4 @@
-# 📦 React SPA Server (Express)
+# 📦 express-frontend-server (for SPA)
 
 A production-ready Express.js server to serve a single-page React application with:
 
