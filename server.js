@@ -14,7 +14,10 @@ const telemetryLimiter = rateLimit({
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.json(),
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.json()
+  ),
   transports: [
     new winston.transports.File({ filename: "telemetry.log" }),
     new winston.transports.Console(),
@@ -88,7 +91,6 @@ app.use(compression());
 // telemetry path to log errors on client-side
 app.post(TELEMETRY_ROUTE, telemetryLimiter, (req, res) => {
   const telemetryLog = req.body;
-  console.log("Telemetry: ", telemetryLog);
   logger.info({ telemetry: telemetryLog });
   res.status(204).send();
 });
