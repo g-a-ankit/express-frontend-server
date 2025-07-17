@@ -19,24 +19,20 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   transports: [
-    new winston.transports.File({ filename: "telemetry.log" }),
     new winston.transports.Console(),
+    new winston.transports.DailyRotateFile({
+      filename: "logs/telemetry-%DATE%.log",
+      datePattern: "YYYY-MM-DD",
+      maxFiles: "60d",
+    }),
   ],
 });
-
-logger.add(
-  new DailyRotateFile({
-    filename: "logs/telemetry-%DATE%.log",
-    datePattern: "YYYY-MM-DD",
-    maxFiles: "60d",
-  })
-);
 
 // starting express app
 const app = express();
 app.use(express.json());
 
-//  set port
+// set port
 const PORT = 5100;
 
 const CODE_FILES_ROUTE = "/assets";
@@ -51,7 +47,7 @@ app.use(
   })
 );
 
-// Add CSP (customize domains as per your app)
+// add CSP (customize domains as per your app)
 // use CSP evaluator (https://csp-evaluator.withgoogle.com/) for checking strength
 // app.use(
 //   helmet.contentSecurityPolicy({
@@ -70,7 +66,7 @@ app.use(
 //   })
 // );
 
-// Set X-Frame-Options (legacy support)
+// set X-Frame-Options (legacy support)
 app.use(
   helmet.frameguard({
     action: "deny", // Or "sameorigin" if embedding your own site
@@ -112,7 +108,7 @@ app.get("*", function (req, resp) {
   resp.sendFile(INDEX_HTML_FILE_PATH);
 });
 
-//Starting server on PORT
+// starting server on PORT
 app.listen(PORT, () => {
   console.log(`Server started! on ${PORT}`);
 });
